@@ -1,13 +1,29 @@
-function population = select(offspring)
-    % Calculate fitness values for offspring.
-    offspringFitness = zeros(size(offspring, 1))
-    for i = 1:size(offspring, 1)
-        offspringFitness(i) = str2num( optical( offspring(i, :) ) );
+function [population,averageFitnessPopulation]  = select(population, offsprings)
+    pop_size       = size(population,1)   %count rows = 1
+    offspring_size = size(population, 2)  %count columns = 2
+    countOffsprings = size(offsprings,1)
+    format long
+        
+    fitnessPopulation = zeros(pop_size,1)
+    
+    % Calculate fitness values for all offsprings.
+    allOffspringFitnesses = zeros(countOffsprings,1)
+    for i = 1:countOffsprings
+        currentOffspring = offsprings(i, :)
+        allOffspringFitnesses(i) = str2double( optical( currentOffspring ) )
     end
     
-    % Create a matrix by concatenating the fitness and the parameters.
-    concatenatedMatrix = [offspringFitness' offspring];
-    sortedConcatenatedMatrix = sortrows(concatenatedMatrix, 1);
-    population = sortedConcatenatedMatrix(size(offspring, 1), 2:31);
+    % Get indexes top offsprings equal to population size
     
+    %OBJECTIVE = Fitness Minimization
+    maxValueFitness = 9999%max(allOffspringFitnesses)
+    
+    for j = 1:pop_size
+        [minimumFitnessValue,indexCurrentMinimumFitnessValue] = min(allOffspringFitnesses)
+        currentBestOffspring = allOffspringFitnesses(indexCurrentMinimumFitnessValue)
+        population(j) = currentBestOffspring
+        fitnessPopulation(j) = minimumFitnessValue
+        allOffspringFitnesses(indexCurrentMinimumFitnessValue) = maxValueFitness
+        averageFitnessPopulation = mean(fitnessPopulation)
+    end  
 end
