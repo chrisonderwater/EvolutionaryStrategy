@@ -1,3 +1,4 @@
 function population = initialize(population_size)
-    population = randi(population_size, 30);
+    parameters = 30
+    population = rand(population_size, parameters);
 end
