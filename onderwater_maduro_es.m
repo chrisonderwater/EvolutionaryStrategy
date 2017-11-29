@@ -15,5 +15,5 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     end
     
     plot(fitnessEvolution)
-    [fopt, xopt] = max(fitness);
+    [fopt, xopt] = min(fitnessEvolution);
 end
