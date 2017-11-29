@@ -4,5 +4,5 @@ function f = optical(x)
 % 	x : 1-d real-valued row vector 
 	cmd = ['./optical ', num2str(x)];
 	[status, cmdout] = system(cmd);
-	f = cmdout
+	f = cmdout;
 end
