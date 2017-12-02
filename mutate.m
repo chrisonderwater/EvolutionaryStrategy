@@ -3,16 +3,18 @@ function mutatedOffsprings = mutate(offsprings, bitMutations,LocalMutationRate,G
     amountOffsprings = size(offsprings, 1);
     sizeOffspring = 30;
     
-    bitMutations = randi(30,1);
+    % x = exprnd(5:10);
+    %bitMutations = int16();
+    bitMutations = randi(30);
     
     for i=1:amountOffsprings
         randomOffspringIndex = randi(amountOffsprings,1);
         currentOffspring = offsprings(randomOffspringIndex,:);
         for j=1:bitMutations
             randomMutationIndex = randi(sizeOffspring,1);
-            uniformNegativePositiveValue1 = 1 - 2*rand();
-            uniformNegativePositiveValue2 = 1 - 2*rand();
-            uniformNegativePositiveValue3 = 1 - 2*rand();
+            uniformNegativePositiveValue1 = normrnd(0, 1);
+            uniformNegativePositiveValue2 = normrnd(0, 1);
+            uniformNegativePositiveValue3 = normrnd(0, 1);
             
             currentStepSize = individualParameterStepsizes(randomMutationIndex);
             newStepSize = currentStepSize + exp(GlobalMutationRate * uniformNegativePositiveValue1 + LocalMutationRate * uniformNegativePositiveValue2);  
