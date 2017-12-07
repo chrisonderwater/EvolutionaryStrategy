@@ -1,4 +1,4 @@
-function mutatedOffsprings = mutate(offsprings, bitMutations,LocalMutationRate,GlobalMutationRate,individualParameterStepsizes)
+function mutatedOffsprings = mutate(offsprings,LocalMutationRate,GlobalMutationRate,individualParameterStepsizes)
     mutatedOffsprings = offsprings;
     amountOffsprings = size(offsprings, 1);
     sizeOffspring = 30;

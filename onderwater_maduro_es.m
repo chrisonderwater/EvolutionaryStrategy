@@ -4,7 +4,7 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     LocalLearningRate = 1/sqrt(2*sqrt(30));
     GlobalLearningRate = 1/sqrt(2*30);
    
-    simulations = 2;
+    simulations = 50;
     muLambdaSimulations = zeros(simulations,2);
     minFopt = 1000;
     minFoptMuLambdaSimulation = 0;
@@ -17,7 +17,7 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
         lambda = population_size + randi(50);   %amount of offsprings per generation
         
     
-        generations =  round(eval_budget/ (lambda * population_size)) ;
+        generations =  round(eval_budget/ lambda ) - (population_size - 1);
         
         t = 0;
         population = initialize(population_size);
@@ -46,6 +46,8 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     [minFopt, minFoptPos] = min(fitnessSimulations);
     plot(minFoptPlotData)
     minFoptMuLambdaSimulation
+    minFopt
+    
     
     %plot..
     %plot(fitnessEvolution)

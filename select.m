@@ -25,5 +25,5 @@ function [population,averageFitnessPopulation]  = select(population, offsprings)
         fitnessPopulation(j) = minimumFitnessValue;
         allOffspringFitnesses(indexCurrentMinimumFitnessValue) = maxValueFitness;
     end  
-    averageFitnessPopulation = mean(fitnessPopulation)
+    averageFitnessPopulation = mean(fitnessPopulation);
 end
