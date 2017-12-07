@@ -4,13 +4,15 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     LocalLearningRate = 1/sqrt(2*sqrt(30));
     GlobalLearningRate = 1/sqrt(2*30);
    
-    simulations = 50;       %20
+    simulations = 100;       %20
     muLambdaSimulations = zeros(simulations,2);
     minFopt = 999999999999;
     minFoptMuLambdaSimulation = 0;
     fitnessSimulations = zeros(simulations,1);
     
-    fitnessSurface = zeros(50,100)
+    muMAX = 10
+    lambdaMAX = 20
+    fitnessSurface = zeros(muMAX,lambdaMAX)
     
     
     %when we know optimal parameters use this part below..
@@ -20,8 +22,8 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     %fitnessSimulationsEvolution = zeros(generations,simulations)
     
     for i=1:simulations
-        population_size = randi(50)            %
-        lambda = population_size + randi(50)   %
+        population_size = randi(10)            %
+        lambda = population_size + randi(10)   %
         generations = floor( (eval_budget - population_size ) / lambda )
         
         if generations <= 0
@@ -61,7 +63,8 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     end
     
     amountOfContours = 10  
-    contourf(fitnessSurface,amountOfContours)  %can crash if amount of contours to large
+    contourf(fitnessSurface,10)  %can crash if amount of contours to large
+
   
     % Find the best simulation.
     [minFopt, minFoptPos] = min(fitnessSimulations);
