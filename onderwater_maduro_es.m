@@ -17,7 +17,7 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
         lambda = population_size + randi(50);   %amount of offsprings per generation
         
     
-        generations =  round(eval_budget/ lambda ) - (population_size - 1);
+        generations =  floor( (eval_budget - population_size ) / lambda);
         
         t = 0;
         population = initialize(population_size);
