@@ -63,8 +63,10 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     end
     
     amountOfContours = 10  
-    contourf(fitnessSurface,10)  %can crash if amount of contours to large
-
+    [C,h] = contourf(fitnessSurface,10)  %can crash if amount of contours to large
+    legend('Optimal Fitness')
+    xlabel('Amount Offspring') % x-axis label
+    ylabel('Population Size') % y-axis label
   
     % Find the best simulation.
     [minFopt, minFoptPos] = min(fitnessSimulations);
