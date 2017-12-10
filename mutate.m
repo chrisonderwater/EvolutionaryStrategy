@@ -21,9 +21,9 @@ function mutatedOffsprings = mutate(offsprings,LocalMutationRate,GlobalMutationR
             
             newParameterValue = currentOffspring(randomMutationIndex) + newStepSize * uniformNegativePositiveValue3;
        
-       
-            if newParameterValue > 1
-                newParameterValue = 1;
+            %search domain
+            if newParameterValue > 10000
+                newParameterValue = 10000;
             end
             if newParameterValue < 0
                 newParameterValue = 0;

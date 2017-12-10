@@ -4,32 +4,68 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     LocalLearningRate = 1/sqrt(2*sqrt(30));
     GlobalLearningRate = 1/sqrt(2*30);
    
-    simulations = 100;       %20
+    %when we do not know optimal combinations
+    %{
+    muMAX = 5  %dont change
+    lambdaMAX = 10  %dont change
+    fitnessSurface = ones(muMAX,lambdaMAX);
+    simulations = lambdaMAX;
+    %to compute all combinations for muMAX and lambdaMAX
+    for s=1:muMAX-1
+        simulations = simulations + lambdaMAX - s
+    end    
+    simulations
+    %}
+    
+    %when we know optimal combination
+    simulations = 20;
+    population_size = 1; %optimaal;            %
+    lambda = 3;         %optimaal;   %
+    generations = floor( (eval_budget - population_size ) / lambda );
+    averageFitnessParentsSimulationsEvolution = zeros(generations,simulations);
+    
+    
     muLambdaSimulations = zeros(simulations,2);
     minFopt = 999999999999;
     minFoptMuLambdaSimulation = 0;
-    fitnessSimulations = zeros(simulations,1);
-    
-    muMAX = 10
-    lambdaMAX = 20
-    fitnessSurface = zeros(muMAX,lambdaMAX)
-    
-    
-    %when we know optimal parameters use this part below..
-    %population_size = 5 %optimaal;            %
-    %lambda = 20 %optimaal;   %
-    %generations = floor( (eval_budget - population_size ) / lambda )
-    %fitnessSimulationsEvolution = zeros(generations,simulations)
-    
+    minimumFitnessSimulations = zeros(simulations,1);
+     
+
+    %when we know optimal parameters
     for i=1:simulations
-        population_size = randi(10)            %
-        lambda = population_size + randi(10)   %
-        generations = floor( (eval_budget - population_size ) / lambda )
+        i
         
-        if generations <= 0
-            generations = 10
+        %when we do not know optimal parameters
+         %{
+        population_size = randi(muMAX)            %
+        lambda = randi(lambdaMAX) 
+        if lambda < population_size
+           lambda = population_size + randi(muMAX)
+        end
+       
+        if fitnessSurface(population_size,lambda) ~= 1  %already computed this fitness
+            "already computed"
+            while fitnessSurface(population_size,lambda) < 1  %check if fitness already computed
+                population_size = randi(muMAX)            %
+                lambda = randi(lambdaMAX)   
+                if lambda < population_size
+                    lambda = population_size + randi(muMAX)
+                end
+            end
+            "new Parameters"
+            population_size
+            lambda
         end
         
+        generations = floor( (eval_budget - population_size ) / lambda )
+        
+        %}
+              
+        %helps with testing
+        if generations <= 0
+            generations = 5;
+        end
+         
         t = 1;
         population = initialize(population_size);
         fitness = evaluate(population);
@@ -41,19 +77,18 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
             fitnessEvolution(t) = averageFitnessPopulation;
             
             %when we know optimal parameters
-            %fitnessSimulationsEvolution(t,i) = averageFitnessPopulation
+            averageFitnessParentsSimulationsEvolution(t,i) = averageFitnessPopulation;
             
             t = t + 1;
         end
         fitnessEvolution
         [fopt, xopt] = min(fitnessEvolution);
         
-        fitnessSurface(population_size,lambda) = fopt;
-        
-        
+        %when we do not know optimal parameters
+        %fitnessSurface(population_size,lambda) = fopt;
         
         muLambdaSimulations(i, :) = [population_size lambda];
-        fitnessSimulations(i) = fopt;
+        minimumFitnessSimulations(i) = fopt;
         if fopt < minFopt
             minFopt = fopt;
             minFoptPlotData = fitnessEvolution;
@@ -62,31 +97,38 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
         t
     end
     
-    amountOfContours = 10  
-    [C,h] = contourf(fitnessSurface,10)  %can crash if amount of contours to large
-    legend('Optimal Fitness')
-    xlabel('Amount Offspring') % x-axis label
-    ylabel('Population Size') % y-axis label
-  
+    %when we do not know optimal parameters
+    %{
+    fitnessSurface(fitnessSurface==1)=-1
+    maximumValueFitnessSurface = max(fitnessSurface(:))
+    fitnessSurface(fitnessSurface==-1)=maximumValueFitnessSurface
+    minimumValueFitnessSurface = min(fitnessSurface(:))
+    
+    fitnessSurfaceScaled = rescale(fitnessSurface,minimumValueFitnessSurface,maximumValueFitnessSurface) %( fitnessSurface - median(fitnessSurface(:)) ) / var(fitnessSurface(:)) %rescale(fitnessSurface)
+            
+    s = surf(fitnessSurfaceScaled,'FaceAlpha',0.5)
+    s.EdgeColor = 'none';
+    xlabel('Offsprings') % x-axis label
+    ylabel('Parents') % y-axis label
+    zlabel('Fitness')
+    %}
+    
     % Find the best simulation.
-    [minFopt, minFoptPos] = min(fitnessSimulations);
+    [minFopt, minFoptPos] = min(minimumFitnessSimulations);
     %plot(minFoptPlotData)
-    minFoptMuLambdaSimulation
-    minFopt
-    
+    minFoptMuLambdaSimulation    %combination to best fitness in all simulation
+    minFopt                      %best fitness in all simulations
+        
     %when we know optimal parameters use this part below..
-    %averageFitnessSimulations = mean(fitnessEvolution)
-    %stdFitnessSimulations = std(fitnessEvolution)
-    %meanFitnessEvolutionSimulations = mean(fitnessSimulationsEvolution,2)
-    %plot(meanFitnessEvolutionSimulations)
-    
+    averageMinimumFitnessSimulations = mean(minimumFitnessSimulations)   %best solution error
+    stdMinimumFitnessSimulations = std(minimumFitnessSimulations)        %best solution std
+    averageFitnessEvolutionSimulations = mean(averageFitnessParentsSimulationsEvolution,2)  %average fitness parent population during evolution all simulations
+
+    plot(averageFitnessEvolutionSimulations)
+    xlabel('Generations') % x-axis label
+    ylabel('Fitness') % y-axis label
 
     
-    
-    
-    
-    
-    %plot..
-    %plot(fitnessEvolution)
+   
     
 end
