@@ -1,7 +1,9 @@
-function allOffsprings = recombine(population,lambda)
+function [allOffsprings, individualParameterStepsizesOffsprings] = recombine(population,lambda, individualParameterStepsizes)
     minimumParents = 2;   %atleast 2 needed for recombination
     maximumParents = size(population,1); %maximum all parents used for recombination 
     sizeParent = 30; %length(population(1,:))
+    offspringParents = zeros(lambda);
+    individualParameterStepsizesOffsprings = zeros(lambda, sizeParent);
     
     allOffsprings = zeros(lambda,sizeParent);
     
@@ -34,6 +36,7 @@ function allOffsprings = recombine(population,lambda)
         %size(newOffspring)
         %size(
         allOffsprings(i,:) = newOffspring;  %add new offspring to all offspring (listoflists)
+        individualParameterStepsizesOffsprings(i, :) = individualParameterStepsizes(X, :);
         %size(allOffsprings,1);
     end
 end

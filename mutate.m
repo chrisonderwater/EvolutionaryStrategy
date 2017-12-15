@@ -1,7 +1,8 @@
-function mutatedOffsprings = mutate(offsprings,LocalMutationRate,GlobalMutationRate,individualParameterStepsizes)
+function [mutatedOffsprings, newIndividualParameterStepSizes] = mutate(offsprings,LocalMutationRate,GlobalMutationRate,individualParameterStepsizes)
     mutatedOffsprings = offsprings;
     amountOffsprings = size(offsprings, 1);
     sizeOffspring = 30;
+    newIndividualParameterStepsizes = individualParameterStepsizes;
     
     % x = exprnd(5:10);
     %bitMutations = int16();
@@ -15,10 +16,11 @@ function mutatedOffsprings = mutate(offsprings,LocalMutationRate,GlobalMutationR
             uniformNegativePositiveValue1 = normrnd(0, 1);
             uniformNegativePositiveValue2 = normrnd(0, 1);
             uniformNegativePositiveValue3 = normrnd(0, 1);
-            
-            currentStepSize = individualParameterStepsizes(randomMutationIndex);
+
+            currentStepSize = individualParameterStepsizes(i, randomMutationIndex);
             newStepSize = currentStepSize + exp(GlobalMutationRate * uniformNegativePositiveValue1 + LocalMutationRate * uniformNegativePositiveValue2);  
-            
+            newStepSize
+            newIndividualParameterStepSizes(i, randomMutationIndex) = double(newStepSize); 
             newParameterValue = currentOffspring(randomMutationIndex) + newStepSize * uniformNegativePositiveValue3;
        
             %search domain

@@ -1,6 +1,4 @@
 function [xopt, fopt] = onderwater_maduro_es(eval_budget)
-
-    individualParameterStepsizes = ones(30);
     LocalLearningRate = 1/sqrt(2*sqrt(30));
     GlobalLearningRate = 1/sqrt(2*30);
    
@@ -70,10 +68,14 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
         population = initialize(population_size);
         fitness = evaluate(population);
         fitnessEvolution = zeros(generations,1);
+        individualParameterStepsizes = ones(population_size, 30)*0.5;
         while (t <= generations)
-            offsprings1 = recombine(population,lambda);
-            offsprings2 = mutate(offsprings1,LocalLearningRate,GlobalLearningRate,individualParameterStepsizes);
-            [population, averageFitnessPopulation] = select(population, offsprings2);
+            individualParameterStepsizes
+            [offsprings1, individualParameterStepsizesOffspring1] = recombine(population, lambda, individualParameterStepsizes);
+            "1" + size(individualParameterStepsizesOffspring1)
+            [offsprings2, individualParameterStepsizesOffspring2] = mutate(offsprings1,LocalLearningRate,GlobalLearningRate,individualParameterStepsizesOffspring1);
+            "2" + size(individualParameterStepsizesOffspring2)
+            [population, averageFitnessPopulation, individualParameterStepsizes] = select(population, offsprings2, individualParameterStepsizes, individualParameterStepsizesOffspring2);
             fitnessEvolution(t) = averageFitnessPopulation;
             
             %when we know optimal parameters
@@ -122,11 +124,11 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     %when we know optimal parameters use this part below..
     averageMinimumFitnessSimulations = mean(minimumFitnessSimulations)   %best solution error
     stdMinimumFitnessSimulations = std(minimumFitnessSimulations)        %best solution std
-    averageFitnessEvolutionSimulations = mean(averageFitnessParentsSimulationsEvolution,2)  %average fitness parent population during evolution all simulations
+    averageFitnessEvolutionSimulations = mean(averageFitnessParentsSimulationsEvolution,2);  %average fitness parent population during evolution all simulations
 
-    plot(averageFitnessEvolutionSimulations)
-    xlabel('Generations') % x-axis label
-    ylabel('Fitness') % y-axis label
+    plot(averageFitnessEvolutionSimulations);
+    xlabel('Generations'); % x-axis label
+    ylabel('Fitness'); % y-axis label
 
     
    
