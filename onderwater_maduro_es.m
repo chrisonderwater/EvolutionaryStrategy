@@ -70,14 +70,10 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
         fitnessEvolution = zeros(generations,1);
         individualParameterStepsizes = ones(population_size, 30)*0.5;
         while (t <= generations)
-            individualParameterStepsizes
             [offsprings1, individualParameterStepsizesOffspring1] = recombine(population, lambda, individualParameterStepsizes);
-            "1" + size(individualParameterStepsizesOffspring1)
             [offsprings2, individualParameterStepsizesOffspring2] = mutate(offsprings1,LocalLearningRate,GlobalLearningRate,individualParameterStepsizesOffspring1);
-            "2" + size(individualParameterStepsizesOffspring2)
             [population, averageFitnessPopulation, individualParameterStepsizes] = select(population, offsprings2, individualParameterStepsizes, individualParameterStepsizesOffspring2);
             fitnessEvolution(t) = averageFitnessPopulation;
-            
             %when we know optimal parameters
             averageFitnessParentsSimulationsEvolution(t,i) = averageFitnessPopulation;
             
