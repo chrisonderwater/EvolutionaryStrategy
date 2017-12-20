@@ -1,4 +1,4 @@
-function [population,averageFitnessPopulation, individualParameterStepsizes]  = select(population, offsprings, individualParameterStepsizes, individualParameterStepsizesOffsprings)
+function [population,fopt,xopt, individualParameterStepsizes]  = select(population, offsprings, individualParameterStepsizes, individualParameterStepsizesOffsprings)
     pop_size       = size(population,1);   %count rows = 1
     offspring_size = size(population, 2);  %count columns = 2
     countOffsprings = size(offsprings,1);
@@ -27,5 +27,6 @@ function [population,averageFitnessPopulation, individualParameterStepsizes]  = 
         fitnessPopulation(j) = minimumFitnessValue;
         allOffspringFitnesses(indexCurrentMinimumFitnessValue) = maxValueFitness;
     end  
-    averageFitnessPopulation = mean(fitnessPopulation);
+    [fopt, xoptInd] = min(fitnessPopulation);
+    xopt = population(xoptInd, :);
 end

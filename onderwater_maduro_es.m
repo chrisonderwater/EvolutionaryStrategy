@@ -1,6 +1,8 @@
 function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     LocalLearningRate = 1/sqrt(2*sqrt(30));
     GlobalLearningRate = 1/sqrt(2*30);
+    xopt = 1000;
+    fopt = 1000;
    
     %when we do not know optimal combinations
     %{
@@ -68,22 +70,21 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
         population = initialize(population_size);
         fitness = evaluate(population);
         fitnessEvolution = zeros(generations,1);
-        individualParameterStepsizes = ones(population_size, 30)*0.5;
+        individualParameterStepsizes = rand(population_size, 30);
         while (t <= generations)
             [offsprings1, individualParameterStepsizesOffspring1] = recombine(population, lambda, individualParameterStepsizes);
             [offsprings2, individualParameterStepsizesOffspring2] = mutate(offsprings1,LocalLearningRate,GlobalLearningRate,individualParameterStepsizesOffspring1);
-            [population, averageFitnessPopulation, individualParameterStepsizes] = select(population, offsprings2, individualParameterStepsizes, individualParameterStepsizesOffspring2);
-            fitnessEvolution(t) = averageFitnessPopulation;
+            [population, tempFopt, tempXopt, individualParameterStepsizes] = select(population, offsprings2, individualParameterStepsizes, individualParameterStepsizesOffspring2);
+            fitnessEvolution(t) = tempFopt;
             %when we know optimal parameters
-            averageFitnessParentsSimulationsEvolution(t,i) = averageFitnessPopulation;
+            averageFitnessParentsSimulationsEvolution(t,i) = tempFopt;
+            if (tempFopt < fopt)
+                fopt = tempFopt;
+                xopt = tempXopt;
+            end
             
             t = t + 1;
         end
-        fitnessEvolution
-        [fopt, xopt] = min(fitnessEvolution);
-        
-        %when we do not know optimal parameters
-        %fitnessSurface(population_size,lambda) = fopt;
         
         muLambdaSimulations(i, :) = [population_size lambda];
         minimumFitnessSimulations(i) = fopt;
@@ -91,26 +92,9 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
             minFopt = fopt;
             minFoptPlotData = fitnessEvolution;
             minFoptMuLambdaSimulation = [population_size lambda];
-            minFopt
         end
         t
     end
-    
-    %when we do not know optimal parameters
-    %{
-    fitnessSurface(fitnessSurface==1)=-1
-    maximumValueFitnessSurface = max(fitnessSurface(:))
-    fitnessSurface(fitnessSurface==-1)=maximumValueFitnessSurface
-    minimumValueFitnessSurface = min(fitnessSurface(:))
-    
-    fitnessSurfaceScaled = rescale(fitnessSurface,minimumValueFitnessSurface,maximumValueFitnessSurface) %( fitnessSurface - median(fitnessSurface(:)) ) / var(fitnessSurface(:)) %rescale(fitnessSurface)
-            
-    s = surf(fitnessSurfaceScaled,'FaceAlpha',0.5)
-    s.EdgeColor = 'none';
-    xlabel('Offsprings') % x-axis label
-    ylabel('Parents') % y-axis label
-    zlabel('Fitness')
-    %}
     
     % Find the best simulation.
     [minFopt, minFoptPos] = min(minimumFitnessSimulations);
@@ -127,7 +111,5 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     xlabel('Generations'); % x-axis label
     ylabel('Fitness'); % y-axis label
 
-    
-   
     
 end
