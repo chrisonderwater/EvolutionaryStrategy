@@ -23,7 +23,7 @@ function [population,averageFitnessPopulation, individualParameterStepsizes]  = 
         [minimumFitnessValue,indexCurrentMinimumFitnessValue] = min(allOffspringFitnesses);
         
         population(j,:) = offsprings(indexCurrentMinimumFitnessValue,:);
-        individualParameterStepsizes(j,:) = individualParameterStepsizesOffsprings(indexCurrentMinimumFitnessValue,:)
+        individualParameterStepsizes(j,:) = individualParameterStepsizesOffsprings(indexCurrentMinimumFitnessValue,:);
         fitnessPopulation(j) = minimumFitnessValue;
         allOffspringFitnesses(indexCurrentMinimumFitnessValue) = maxValueFitness;
     end  

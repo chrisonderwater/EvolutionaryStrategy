@@ -13,30 +13,32 @@ function [allOffsprings, individualParameterStepsizesOffsprings] = recombine(pop
         %choose amount of X random parents that will be used for recombination
         X = randi(maximumParents,1);
         
-        
-        Xindexes = zeros(X,1);  %init list
-        
         %choose the indexes of the X random parents that will be used from
         %population for recombination
         Xindexes = randsample(maximumParents,X);
         
         %recombine -> for each parameter take the average out of the X parents
         newOffspring = zeros(sizeParent,1);
+        newOffspringStepsizes = zeros(sizeParent, 1);
         for j=1:sizeParent   %amount of parameters
-            som = 0;
+            totalIndividualParameterRecombined = 0;
+        	totalIndividualStepsizeRecombined = 0;
+            
             for k=1:X       %amount of parents selected
                 currentParent = population(Xindexes(k),:); 
-                som = som + currentParent(j);  
+                totalIndividualParameterRecombined = totalIndividualParameterRecombined + currentParent(j); 
+                currentStepsizesParent = individualParameterStepsizes(Xindexes(k),:);
+                totalIndividualStepsizeRecombined = totalIndividualStepsizeRecombined  +  currentStepsizesParent(j);
             end
+            
             %X
-            average = som/X;   %average for this parameters
+            average = totalIndividualParameterRecombined/X;   %average for this parameters
+            averageStepsize = totalIndividualStepsizeRecombined/X;
             
             newOffspring(j) = average;
-        end    
-        %size(newOffspring)
-        %size(
+            newOffspringStepsizes(j) = averageStepsize;
+        end 
         allOffsprings(i,:) = newOffspring;  %add new offspring to all offspring (listoflists)
-        individualParameterStepsizesOffsprings(i, :) = individualParameterStepsizes(X, :);
-        %size(allOffsprings,1);
+        individualParameterStepsizesOffsprings(i, :) = newOffspringStepsizes;
     end
 end

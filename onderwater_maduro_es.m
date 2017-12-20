@@ -16,9 +16,9 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
     %}
     
     %when we know optimal combination
-    simulations = 20;
-    population_size = 1; %optimaal;            %
-    lambda = 3;         %optimaal;   %
+    simulations = 1;
+    population_size = 2; %optimaal;            %
+    lambda = 7;         %optimaal;   %
     generations = floor( (eval_budget - population_size ) / lambda );
     averageFitnessParentsSimulationsEvolution = zeros(generations,simulations);
     
@@ -91,6 +91,7 @@ function [xopt, fopt] = onderwater_maduro_es(eval_budget)
             minFopt = fopt;
             minFoptPlotData = fitnessEvolution;
             minFoptMuLambdaSimulation = [population_size lambda];
+            minFopt
         end
         t
     end
